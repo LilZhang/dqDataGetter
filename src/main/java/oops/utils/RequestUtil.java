@@ -7,15 +7,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-/*import org.htmlparser.Node;
-import org.htmlparser.NodeFilter;
-import org.htmlparser.Parser;
-import org.htmlparser.util.NodeList;
-import org.htmlparser.util.ParserException;*/
 
 /**
  * 请求操作工具类
@@ -24,7 +17,6 @@ import org.htmlparser.util.ParserException;*/
  */
 public class RequestUtil {
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-    private static long RETRY_MILLIS = 3000;		//超时重试时间(毫秒)
 
     /**
      * 发送post请求并获取返回结果
@@ -34,10 +26,11 @@ public class RequestUtil {
      * @return
      */
     public static String post(String urlStr, String content, String encoding) {
+        Proxy proxy = ProxyPool.getProxy();
         System.out.println(sdf.format(new Date()) + " => POST : " + urlStr + " || Data : " + content);
         HttpURLConnection connection = null;
         try {
-            connection = initRequest(urlStr, true);
+            connection = initRequest(urlStr, proxy, true);
 
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());// 打开输出流往对端服务器写数据
             out.writeBytes(content);// 提交表单
@@ -49,16 +42,11 @@ public class RequestUtil {
         } catch (IOException e) {
             //e.printStackTrace();
             System.out.println("[ POST : TRY AGAIN ] : " + urlStr + " || Data : " + content);
-            try {
-                Thread.sleep(RETRY_MILLIS);
-                return post(urlStr, content, encoding);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
+            ProxyPool.delete(proxy);
+            return post(urlStr, content, encoding);
         } finally {
             finalizeRequest(connection);
         }
-        return null;
     }
 
     /**
@@ -79,26 +67,22 @@ public class RequestUtil {
      * @return
      */
     public static String get(String urlStr, String encoding) {
+        Proxy proxy = ProxyPool.getProxy();
         System.out.println(sdf.format(new Date()) + " => GET : " + urlStr);
         HttpURLConnection connection = null;
         try {
-            connection = initRequest(urlStr, false);
+            connection = initRequest(urlStr, proxy, false);
 
             return getResponseStr(connection, encoding);
 
         } catch (IOException e) {
             //e.printStackTrace();
             System.out.println("[ GET : TRY AGAIN ] : " + urlStr);
-            try {
-                Thread.sleep(RETRY_MILLIS);
-                return get(urlStr, encoding);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
+            ProxyPool.delete(proxy);
+            return get(urlStr, encoding);
         } finally {
             finalizeRequest(connection);
         }
-        return null;
     }
 
     /**
@@ -132,17 +116,6 @@ public class RequestUtil {
     /**
      * 初始化请求连接
      * @param urlStr	请求地址
-     * @param isPost	是否为post方式
-     * @return
-     * @throws IOException
-     */
-    private static HttpURLConnection initRequest(String urlStr, boolean isPost) throws IOException {
-        return initRequest(urlStr, null, isPost);
-    }
-
-    /**
-     * 初始化请求连接
-     * @param urlStr	请求地址
      * @param proxy		代理
      * @param isPost	是否为post方式
      * @return
@@ -157,8 +130,8 @@ public class RequestUtil {
             connection = (HttpURLConnection) url.openConnection(proxy);// 新建连接实例
         else
             connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(1500000);// 设置连接超时时间，单位毫秒
-        connection.setReadTimeout(1500000);// 设置读取数据超时时间，单位毫秒
+        connection.setConnectTimeout(15000);// 设置连接超时时间，单位毫秒
+        connection.setReadTimeout(15000);// 设置读取数据超时时间，单位毫秒
         connection.setDoOutput(true);// 是否打开输出流 true|false
         connection.setDoInput(true);// 是否打开输入流true|false
         if (isPost)

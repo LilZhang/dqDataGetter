@@ -16,6 +16,7 @@ import oops.model.SampleFile;
 import oops.model.Series;
 import oops.model.Supplier;
 import oops.thread.DataThread;
+import oops.thread.ProxyPoolThread;
 import oops.utils.DatabaseUtil;
 import oops.utils.RequestUtil;
 import oops.utils.TableUtil;
@@ -35,6 +36,11 @@ public class Main {
     public static void main(String[] args) {
 
         init();
+
+        ProxyPoolThread ppt = new ProxyPoolThread();
+        Thread daemonThread = new Thread(ppt);
+        daemonThread.setDaemon(true);
+        daemonThread.start();
 
         Gson gson = new Gson();
         String results = "";
