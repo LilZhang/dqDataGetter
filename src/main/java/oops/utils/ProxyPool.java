@@ -21,12 +21,17 @@ import org.jsoup.select.Elements;
 public class ProxyPool {
 	
 	private static List<Proxy> proxys = new LinkedList<Proxy>();	//代理集合
+	private static List<Proxy> cache = new LinkedList<Proxy>();	//这里面的代理都是用过而且好用的(并不代表将来也好用)
 
 	/**
 	 * 刷新代理池
 	 */
 	public static void refresh() {
+
 		proxys.clear();
+		proxys.addAll(cache);
+		cache.clear();
+
 //		String urlStr = "http://www.xicidaili.com/nn/";
 //		String encoding = "utf-8";
 //		String html = RequestUtil.getHTML(urlStr, encoding);
@@ -95,5 +100,9 @@ public class ProxyPool {
 	 */
 	public static int size() {
 		return proxys.size();
+	}
+
+	public static void cache(Proxy proxy) {
+		cache.add(proxy);
 	}
 }

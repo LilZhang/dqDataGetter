@@ -46,8 +46,11 @@ public class RequestUtil {
             //e.printStackTrace();
             System.out.println("[ POST : TRY AGAIN ] : " + urlStr + " || Data : " + content);
             ProxyPool.delete(proxy);
+            proxy = null;
             return post(urlStr, content, encoding);
         } finally {
+            if (proxy != null)
+                ProxyPool.cache(proxy);
             finalizeRequest(connection);
         }
     }
@@ -85,8 +88,11 @@ public class RequestUtil {
             //e.printStackTrace();
             System.out.println("[ GET : TRY AGAIN ] : " + urlStr);
             ProxyPool.delete(proxy);
+            proxy = null;
             return get(urlStr, encoding);
         } finally {
+            if (proxy != null)
+                ProxyPool.cache(proxy);
             finalizeRequest(connection);
         }
     }
