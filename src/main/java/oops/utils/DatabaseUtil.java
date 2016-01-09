@@ -24,7 +24,7 @@ public class DatabaseUtil {
      */
     public static void init() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/testG", "root", "root");
+        conn = DriverManager.getConnection("jdbc:mysql://192.168.2.8:3306/dq?characterEncoding=utf8", "dianqi", "dianqi");
         stmt = conn.createStatement();
     }
 
@@ -69,4 +69,16 @@ public class DatabaseUtil {
             DatabaseUtil.terminate();
         }
     }
+
+//    public static void main(String[] args) {
+//        try {
+//            init();
+//            execute("CREATE TABLE test_table (prop_a int, prop_b int)");
+//        }catch (Exception e) {
+//            e.printStackTrace();;
+//        } finally {
+//            terminate();
+//        }
+//
+//    }
 }

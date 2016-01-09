@@ -17,7 +17,7 @@ public class ProxyPoolThread implements Runnable {
 		while(true) {
 			ProxyPool.refresh();
 			try {
-				Thread.sleep(60000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

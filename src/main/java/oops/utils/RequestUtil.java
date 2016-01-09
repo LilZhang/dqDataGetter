@@ -27,7 +27,10 @@ public class RequestUtil {
      */
     public static String post(String urlStr, String content, String encoding) {
         Proxy proxy = ProxyPool.getProxy();
-        System.out.println(sdf.format(new Date()) + " => POST : " + urlStr + " || Data : " + content);
+        String proxyAddress = "";
+        if (proxy != null)
+            proxyAddress = proxy.address().toString();
+        System.out.println(sdf.format(new Date()) +" PROXY : "+ proxyAddress + " => POST : " + urlStr + " || Data : " + content);
         HttpURLConnection connection = null;
         try {
             connection = initRequest(urlStr, proxy, true);
@@ -68,7 +71,10 @@ public class RequestUtil {
      */
     public static String get(String urlStr, String encoding) {
         Proxy proxy = ProxyPool.getProxy();
-        System.out.println(sdf.format(new Date()) + " => GET : " + urlStr);
+        String proxyAddress = "";
+        if (proxy != null)
+            proxyAddress = proxy.address().toString();
+        System.out.println(sdf.format(new Date()) +" PROXY : "+ proxyAddress +" => GET : " + urlStr);
         HttpURLConnection connection = null;
         try {
             connection = initRequest(urlStr, proxy, false);
@@ -83,6 +89,39 @@ public class RequestUtil {
         } finally {
             finalizeRequest(connection);
         }
+    }
+
+    /**
+     * 发送get请求并获取返回结果(不启用代理)
+     * @param urlStr	请求地址
+     * @param encoding	编码格式
+     * @return
+     */
+    public static String getWithoutProxy(String urlStr, String encoding) {
+        System.out.println(sdf.format(new Date()) + " => GET : " + urlStr);
+        HttpURLConnection connection = null;
+        try {
+            connection = initRequest(urlStr, null, false);
+
+            return getResponseStr(connection, encoding);
+
+        } catch (IOException e) {
+            //e.printStackTrace();
+            System.out.println("[ GET : TRY AGAIN ] : " + urlStr);
+            //ProxyPool.delete(proxy);
+            return get(urlStr, encoding);
+        } finally {
+            finalizeRequest(connection);
+        }
+    }
+
+    /**
+     * 发送get请求并获取返回结果(不启用代理)
+     * @param urlStr	请求地址
+     * @return
+     */
+    public static String getWithoutProxy(String urlStr) {
+        return getWithoutProxy(urlStr, "utf-8");
     }
 
     /**
@@ -131,7 +170,7 @@ public class RequestUtil {
         else
             connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout(15000);// 设置连接超时时间，单位毫秒
-        connection.setReadTimeout(15000);// 设置读取数据超时时间，单位毫秒
+        connection.setReadTimeout(30000);// 设置读取数据超时时间，单位毫秒
         connection.setDoOutput(true);// 是否打开输出流 true|false
         connection.setDoInput(true);// 是否打开输入流true|false
         if (isPost)

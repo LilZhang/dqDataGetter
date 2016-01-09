@@ -26,26 +26,51 @@ public class ProxyPool {
 	 * 刷新代理池
 	 */
 	public static void refresh() {
-		//proxys.clear();
-		String urlStr = "http://www.xicidaili.com/nn/";
-		String encoding = "utf-8";
-		String html = RequestUtil.getHTML(urlStr, encoding);
-		Document doc = Jsoup.parse(html);
+		proxys.clear();
+//		String urlStr = "http://www.xicidaili.com/nn/";
+//		String encoding = "utf-8";
+//		String html = RequestUtil.getHTML(urlStr, encoding);
+//		Document doc = Jsoup.parse(html);
 		
-		Elements elements = doc.select("tr[class]");
-		for (Element e : elements) {
-			Proxy proxy;
-			try {
-				proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(InetAddress.getByName(e.child(2).html()), Integer.parseInt(e.child(3).html())));
-				proxys.add(proxy);
-			} catch (NumberFormatException e1) {
-				e1.printStackTrace();
-			} catch (UnknownHostException e1) {
-				e1.printStackTrace();
+//		Elements elements = doc.select("tr[class]");
+//		for (Element e : elements) {
+//			Proxy proxy;
+//			try {
+//				proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(InetAddress.getByName(e.child(2).html()), Integer.parseInt(e.child(3).html())));
+//				proxys.add(proxy);
+//			} catch (NumberFormatException e1) {
+//				e1.printStackTrace();
+//			} catch (UnknownHostException e1) {
+//				e1.printStackTrace();
+//			}
+//		}
+		Proxy proxy;
+		String proxyStr = RequestUtil.getWithoutProxy("http://ip.zdaye.com/?api=201601091306198335&dengji=%C4%E4%C3%FB&checktime=1%B7%D6%D6%D3%C4%DA&gb=2&ct=150&daochu=1");
+
+		if (!proxyStr.startsWith("<bad>")) {
+			String[] proxyLists = proxyStr.split(",");
+			for (String p : proxyLists) {
+				String[] ipWithPort = p.split(":");
+				if (ipWithPort.length == 2) {
+					String ip = ipWithPort[0];
+					String port = ipWithPort[1];
+					InetAddress inetAddress = null;
+					try {
+						inetAddress = InetAddress.getByName(ip);
+					} catch (UnknownHostException e) {
+						e.printStackTrace();
+					}
+					proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(inetAddress, Integer.parseInt(port)));
+					proxys.add(proxy);
+				}
 			}
+			//proxys.subList(0, proxys.size()-1).clear();
+			System.out.println("Proxy Pool : " + size());
+		} else {
+			System.out.println("[ PROXYPOOL : TRY AGAIN ]");
+			refresh();
 		}
-		//proxys.subList(8, proxys.size()-1).clear();
-		System.out.println("Proxy Pool : " + size());
+
 	}
 
 	/**

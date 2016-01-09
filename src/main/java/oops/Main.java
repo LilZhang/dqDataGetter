@@ -51,7 +51,7 @@ public class Main {
 
         List<Factory> subFactories = new ArrayList<Factory>();
         DataThread dt = null;
-        int param = 58;
+        int param = 20;
 
         //根据对应结果生成相应数量的分支线程
         for (int i = 0; i < factories.size(); i+=param) {
