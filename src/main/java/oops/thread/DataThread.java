@@ -104,7 +104,7 @@ public class DataThread implements Runnable {
 
 
                                     //若结果为空则跳出循环
-                                    if (priceData.Table == null || priceData.Table.size() == 0) {
+                                    if (priceData == null || priceData.Table == null || priceData.Table.size() == 0) { //FIXME : Exception in thread "Thread-10" java.lang.NullPointerException
                                         flag = false;
                                     } else {
                                         prices.addAll(priceData.Table); //// price
@@ -182,6 +182,7 @@ public class DataThread implements Runnable {
         try {
             categoryMap = gson.fromJson(result, new TypeToken<Map<String, String>>() {}.getType());
         } catch(JsonSyntaxException e) {
+            System.out.println("[ BAD PROXY : TRY AGAIN ]");
             return getCategoryMap(gson, hash);
         }
         return categoryMap;
@@ -200,6 +201,7 @@ public class DataThread implements Runnable {
         try {
             seriess = gson.fromJson(results, new TypeToken<List<Series>>() {}.getType());
         } catch(JsonSyntaxException e) {
+            System.out.println("[ BAD PROXY : TRY AGAIN ]");
             return getSeriess(gson, fid);
         }
         return seriess;
@@ -218,6 +220,7 @@ public class DataThread implements Runnable {
         try {
             hash = gson.fromJson(results, new TypeToken<Hash>() {}.getType());
         } catch(JsonSyntaxException e) {
+            System.out.println("[ BAD PROXY : TRY AGAIN ]");
             return getHash(gson, cid);
         }
         return hash;
@@ -229,6 +232,7 @@ public class DataThread implements Runnable {
         try {
             priceData = gson.fromJson(results, new TypeToken<TCountAndTablePrice>() {}.getType());
         }catch(JsonSyntaxException e) {
+            System.out.println("[ BAD PROXY : TRY AGAIN ]");
             return getPriceData(gson, fid, categoryid, cid, page);
         }
         return priceData;
@@ -240,6 +244,7 @@ public class DataThread implements Runnable {
         try {
             supplierData = gson.fromJson(results, new TypeToken<TCountAndTableSupplier>() {}.getType());
         } catch(JsonSyntaxException e) {
+            System.out.println("[ BAD PROXY : TRY AGAIN ]");
             return getSupplierData(gson, cid);
         }
         return supplierData;
@@ -251,6 +256,7 @@ public class DataThread implements Runnable {
         try {
             elementInfo = gson.fromJson(results, new TypeToken<ElementInfo>() {}.getType()); //// ei
         }catch(JsonSyntaxException e) {
+            System.out.println("[ BAD PROXY : TRY AGAIN ]");
             return getElementInfo(gson, cid, F_InnerModel);
         }
         return elementInfo;
@@ -262,6 +268,7 @@ public class DataThread implements Runnable {
         try {
             sampleFiles = gson.fromJson(results, new TypeToken<List<SampleFile>>() {}.getType()); ////sampleFile
         }catch(JsonSyntaxException e) {
+            System.out.println("[ BAD PROXY : TRY AGAIN ]");
             return getSampleFiles(gson, cid, fid, F_InnerModel, pcid);
         }
         return sampleFiles;
