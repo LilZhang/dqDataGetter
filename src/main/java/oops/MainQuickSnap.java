@@ -42,6 +42,12 @@ public class MainQuickSnap {
             long toPageIndex = ii + perNum > res ? res : ii + perNum;
             DataThreadQuickSnap dtqs = new DataThreadQuickSnap(ii, toPageIndex);
             new Thread(dtqs).start();
+            try {
+                Thread.sleep(7000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 //        DataThreadQuickSnap dtqs = new DataThreadQuickSnap(1L, 163456L);
 //        new Thread(dtqs).start();
