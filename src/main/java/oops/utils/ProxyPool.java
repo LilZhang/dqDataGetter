@@ -27,7 +27,7 @@ public class ProxyPool {
 	 * 刷新代理池
 	 */
 	public static void refresh() {
-
+		int originSize = size();
 		proxys.clear();
 		proxys.addAll(cache);
 		cache.clear();
@@ -70,7 +70,7 @@ public class ProxyPool {
 				}
 			}
 			//proxys.subList(0, proxys.size()-1).clear();
-			System.out.println("Proxy Pool : " + size());
+			System.out.println("[ PROXYPOOL SIZE : " + originSize + " -> " + size() + " ]");
 		} else {
 			System.out.println("[ PROXYPOOL : TRY AGAIN ]");
 			refresh();
@@ -91,7 +91,9 @@ public class ProxyPool {
 	 * 从代理池中删除对应代理
 	 */
 	public static void delete(Proxy proxy) {
-		proxys.remove(proxy);
+		if (proxys.size() > 1) {
+			proxys.remove(proxy);
+		}
 	}
 
 	/**

@@ -17,7 +17,7 @@ public class ExtendArrayList<E> extends ArrayList<E> implements ExtendList<E> {
 	
 	private static final long serialVersionUID = -2164082747432131609L;
 	
-	private static int WRITE_IN_SIZE = 200;		//元素写入阈值
+	private static int WRITE_IN_SIZE = 1;		//元素写入阈值
 
 	/**
 	 * 将容器内所有元素写入数据库

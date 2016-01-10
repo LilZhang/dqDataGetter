@@ -114,7 +114,6 @@ public class RequestUtil {
         } catch (IOException e) {
             //e.printStackTrace();
             System.out.println("[ GET : TRY AGAIN ] : " + urlStr);
-            //ProxyPool.delete(proxy);
             return get(urlStr, encoding);
         } finally {
             finalizeRequest(connection);
@@ -176,7 +175,7 @@ public class RequestUtil {
         else
             connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout(15000);// 设置连接超时时间，单位毫秒
-        connection.setReadTimeout(30000);// 设置读取数据超时时间，单位毫秒
+        connection.setReadTimeout(90000);// 设置读取数据超时时间，单位毫秒
         connection.setDoOutput(true);// 是否打开输出流 true|false
         connection.setDoInput(true);// 是否打开输入流true|false
         if (isPost)
