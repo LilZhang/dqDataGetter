@@ -34,13 +34,16 @@ public class MainQuickSnap {
         List<Factory> factories = gson.fromJson(results, new TypeToken<List<Factory>>() {}.getType());
         saveFactories(factories);
 
-        //long res = findTotalCount(gson);    //163456
-        long res = 163456;
-        long perNum = 163456 / (THREAD_COUNT - 1);
+        Factory factory = new Factory();
+        factory.fid = "97589c5f-0221-4fc6-b65c-38f8677a8321";   //  ABB
+
+        long res = findTotalCount(gson, factory);
+//        long res = 163456;
+        long perNum = res / (THREAD_COUNT - 1);
 
         for (long ii = 1; ii <= res; ii += perNum) {
             long toPageIndex = ii + perNum > res ? res : ii + perNum;
-            DataThreadQuickSnap dtqs = new DataThreadQuickSnap(ii, toPageIndex);
+            DataThreadQuickSnap dtqs = new DataThreadQuickSnap(ii, toPageIndex, factory);
             new Thread(dtqs).start();
             try {
                 Thread.sleep(7000);
@@ -96,7 +99,7 @@ public class MainQuickSnap {
         }
     }
 
-    private static long findTotalCount(Gson gson) {
+    private static long findTotalCount(Gson gson, Factory factory) {
         boolean flag = true;
         long n = 0;
         long i = 0;
@@ -104,7 +107,7 @@ public class MainQuickSnap {
         long res = 0;
         while (flag) {
             i = (long) Math.pow(2, n);
-            TCountAndTablePrice tCountAndTablePrice = DataObjectUtil.getPriceData(gson, "", "", "",i);
+            TCountAndTablePrice tCountAndTablePrice = DataObjectUtil.getPriceData(gson, factory.fid, "", "",i);
 
             if (tCountAndTablePrice != null) {
                 if (tCountAndTablePrice.Table != null && tCountAndTablePrice.Table.size() > 0 && tCountAndTablePrice.Table.size() <= 50) {

@@ -15,6 +15,7 @@ public class DataThreadQuickSnap implements Runnable {
 
     private Long fromPageIndex;
     private Long toPageIndex;
+    private Factory factory;
 
 
     public void run() {
@@ -25,7 +26,7 @@ public class DataThreadQuickSnap implements Runnable {
         ExtendList<ElementInfo> elementInfoList = new ExtendArrayList<ElementInfo>();
 
         for (Long i = fromPageIndex; i < toPageIndex; i++) {
-            TCountAndTablePrice tCountAndTablePrice = DataObjectUtil.getPriceData(gson, "", "", "", i);
+            TCountAndTablePrice tCountAndTablePrice = DataObjectUtil.getPriceData(gson, factory.fid, "", "", i);
             if (tCountAndTablePrice != null) {
                 List<Price> prices = tCountAndTablePrice.Table;
 
@@ -54,20 +55,21 @@ public class DataThreadQuickSnap implements Runnable {
         elementInfoList.insertAllIntoDB();
     }
 
-    public DataThreadQuickSnap(Long fromPageIndex, Long toPageIndex) {
+    public DataThreadQuickSnap(Long fromPageIndex, Long toPageIndex, Factory factory) {
         this.fromPageIndex = fromPageIndex;
         this.toPageIndex = toPageIndex;
+        this.factory = factory;
     }
 
 
 
 
 
-    public static void main(String[] args) {
-        DataThreadQuickSnap dataThread2 = new DataThreadQuickSnap(3L, 5L);
-        dataThread2.run();
-
-
-
-    }
+//    public static void main(String[] args) {
+//        DataThreadQuickSnap dataThread2 = new DataThreadQuickSnap(3L, 5L);
+//        dataThread2.run();
+//
+//
+//
+//    }
 }
